@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Técnicos</title>
+    <link rel="icon" type="image/png" href="IMG/logo-removebg-preview.png?v=2">
     <link rel="stylesheet" href="style.css">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -28,7 +29,7 @@
 <main class="pagina">
     <h1>Técnicos</h1>
     <p>Cadastre e gerencie os técnicos da equipe.</p>
-    <a href="cadastrar.html" class="botao-menu">+ Cadastrar Técnicos</a>
+    <button type="button" class="botao-menu" id="abrirModalCadastroTecnico">+ Cadastrar Técnicos</button>
 
     <section class="block">
         <div class="secao-titulo"><h2>Registros</h2></div>
@@ -52,6 +53,71 @@
         </div>
     </section>
 </main>
+
+<dialog class="modal-cadastro" id="modalCadastroTecnico" aria-labelledby="tituloCadastroTecnico">
+    <div class="modal-cabecalho">
+        <div>
+            <h2 id="tituloCadastroTecnico">Cadastrar técnico</h2>
+            <p>Informe os dados do novo técnico.</p>
+        </div>
+        <button type="button" class="modal-fechar" id="fecharModalCadastroTecnico">Fechar</button>
+    </div>
+
+    <form id="formCadastroTecnico" class="formulario">
+        <div class="campo">
+            <label for="cadastroTecnicoNome">Nome completo</label>
+            <input type="text" id="cadastroTecnicoNome" name="nome" maxlength="120" required>
+        </div>
+        <div class="campo">
+            <label for="cadastroTecnicoEmail">E-mail</label>
+            <input type="email" id="cadastroTecnicoEmail" name="email" maxlength="254" required>
+        </div>
+        <div class="campo">
+            <label for="cadastroTecnicoSenha">Senha</label>
+            <input type="password" id="cadastroTecnicoSenha" name="senha" minlength="6" required>
+        </div>
+        <div class="campo">
+            <label for="cadastroTecnicoIdade">Idade</label>
+            <input type="number" id="cadastroTecnicoIdade" name="idade" min="18" max="99" required>
+        </div>
+        <div class="campo">
+            <label for="cadastroTecnicoNascimento">Data de nascimento</label>
+            <input type="date" id="cadastroTecnicoNascimento" name="data_nascimento" required>
+        </div>
+        <div class="campo">
+            <label for="cadastroTecnicoGenero">Gênero</label>
+            <select id="cadastroTecnicoGenero" name="genero">
+                <option value="Masculino">Masculino</option>
+                <option value="Feminino">Feminino</option>
+                <option value="Prefiro_nao_dizer">Prefiro não dizer</option>
+            </select>
+        </div>
+        <div class="campo">
+            <label for="cadastroTecnicoNivel">Nível de conhecimento</label>
+            <select id="cadastroTecnicoNivel" name="nivel">
+                <option value="JÚNIOR">Júnior</option>
+                <option value="PLENO">Pleno</option>
+                <option value="SÊNIOR">Sênior</option>
+            </select>
+        </div>
+        <div class="campo">
+            <label for="cadastroTecnicoBio">Experiência</label>
+            <textarea id="cadastroTecnicoBio" name="bio" maxlength="1000"></textarea>
+        </div>
+        <div class="campo">
+            <label for="cadastroTecnicoHorario">Melhor horário para contato</label>
+            <input type="time" id="cadastroTecnicoHorario" name="horario_contato">
+        </div>
+        <div class="campo">
+            <label for="cadastroTecnicoDisponibilidade">Data disponível para iniciar</label>
+            <input type="date" id="cadastroTecnicoDisponibilidade" name="data_disponivel" required>
+        </div>
+        <p class="cadastro-feedback" id="erroCadastroTecnico" role="status" aria-live="polite"></p>
+        <div class="form-acoes">
+            <button type="submit" class="entrar">Cadastrar</button>
+        </div>
+    </form>
+</dialog>
 
 <dialog class="modal-cadastro" id="modalEditarTecnico" aria-labelledby="tituloEditarTecnico">
     <div class="modal-cabecalho">
@@ -125,6 +191,9 @@
 <script>
     const listaTecnicos = document.getElementById('listaTecnicos');
     const feedbackTecnicos = document.getElementById('feedbackTecnicos');
+    const botaoAbrirCadastroTecnico = document.getElementById('abrirModalCadastroTecnico');
+    const modalCadastroTecnico = document.getElementById('modalCadastroTecnico');
+    const formCadastroTecnico = document.getElementById('formCadastroTecnico');
     const modalEditarTecnico = document.getElementById('modalEditarTecnico');
     const formEditarTecnico = document.getElementById('formEditarTecnico');
     let tecnicoEmEdicao = null;
@@ -134,6 +203,35 @@
         const celula = document.createElement('td');
         celula.textContent = valor === null || valor === undefined || valor === '' ? '-' : String(valor);
         linha.append(celula);
+    }
+
+    async function cadastrarTecnico(evento) {
+        evento.preventDefault();
+        const botaoEnviar = formCadastroTecnico.querySelector('[type="submit"]');
+        const erro = document.getElementById('erroCadastroTecnico');
+        erro.textContent = '';
+        botaoEnviar.disabled = true;
+
+        try {
+            const resposta = await fetch('/api/tecnicos/cadastro', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(Object.fromEntries(new FormData(formCadastroTecnico)))
+            });
+            const resultado = await resposta.json();
+            if (!resposta.ok) {
+                throw new Error(resultado.erro || 'Não foi possível cadastrar o técnico.');
+            }
+
+            modalCadastroTecnico.close();
+            formCadastroTecnico.reset();
+            await carregarTecnicos();
+            feedbackTecnicos.textContent = 'Técnico cadastrado com sucesso.';
+        } catch (erroCadastro) {
+            erro.textContent = erroCadastro.message;
+        } finally {
+            botaoEnviar.disabled = false;
+        }
     }
 
     async function carregarTecnicos() {
@@ -247,6 +345,17 @@
     });
 
     document.getElementById('fecharModalTecnico').addEventListener('click', () => modalEditarTecnico.close());
+    botaoAbrirCadastroTecnico.addEventListener('click', () => {
+        document.getElementById('erroCadastroTecnico').textContent = '';
+        modalCadastroTecnico.showModal();
+        document.getElementById('cadastroTecnicoNome').focus();
+    });
+    document.getElementById('fecharModalCadastroTecnico').addEventListener('click', () => modalCadastroTecnico.close());
+    formCadastroTecnico.addEventListener('submit', cadastrarTecnico);
+    modalCadastroTecnico.addEventListener('click', (evento) => {
+        if (evento.target === modalCadastroTecnico) modalCadastroTecnico.close();
+    });
+    modalCadastroTecnico.addEventListener('close', () => botaoAbrirCadastroTecnico.focus());
     modalEditarTecnico.addEventListener('click', (evento) => {
         if (evento.target === modalEditarTecnico) modalEditarTecnico.close();
     });

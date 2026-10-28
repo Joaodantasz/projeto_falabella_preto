@@ -493,6 +493,111 @@ app.post('/api/usuarios/login', rota(async (req, res) => {
 }));
 
 // =========================================================
+// CLIENTES
+// =========================================================
+
+app.post('/api/clientes', rota(async (req, res) => {
+    const dados = req.body || {};
+    const nome = texto(dados.nome);
+    const telefone = texto(dados.telefone);
+    const email = texto(dados.email).toLowerCase();
+
+    if (!nome || nome.length > 120) {
+        throw erroHttp(400, 'Informe um nome com até 120 caracteres.');
+    }
+
+    if (telefone.length > 40 || email.length > 254 || (email && !emailValido(email))) {
+        throw erroHttp(400, 'Confira o telefone e o e-mail informados.');
+    }
+
+    const resultado = await executar(
+        'INSERT INTO clientes (nome, telefone, email) VALUES (?, ?, ?)',
+        [nome, telefone || null, email || null]
+    );
+
+    res.status(201).json({
+        mensagem: 'Cliente cadastrado com sucesso.',
+        id_cliente: resultado.id
+    });
+}));
+
+app.get('/api/clientes', rota(async (req, res) => {
+    const clientes = await consultar(`
+        SELECT
+            clientes.id_cliente,
+            clientes.nome,
+            clientes.telefone,
+            clientes.email,
+            COUNT(ordens_servico.id_os) AS os_atribuidas
+        FROM clientes
+        LEFT JOIN ordens_servico
+            ON ordens_servico.id_cliente = clientes.id_cliente
+        GROUP BY clientes.id_cliente
+        ORDER BY clientes.nome COLLATE NOCASE
+    `);
+
+    res.json(clientes);
+}));
+
+app.put('/api/clientes/:id', rota(async (req, res) => {
+    const idCliente = Number(req.params.id);
+    const dados = req.body || {};
+    const nome = texto(dados.nome);
+    const telefone = texto(dados.telefone);
+    const email = texto(dados.email).toLowerCase();
+
+    if (!Number.isInteger(idCliente) || idCliente < 1) {
+        throw erroHttp(400, 'Identificador de cliente inválido.');
+    }
+
+    if (!nome || nome.length > 120) {
+        throw erroHttp(400, 'Informe um nome com até 120 caracteres.');
+    }
+
+    if (telefone.length > 40 || email.length > 254 || (email && !emailValido(email))) {
+        throw erroHttp(400, 'Confira o telefone e o e-mail informados.');
+    }
+
+    const cliente = await buscarUm(
+        'SELECT id_cliente FROM clientes WHERE id_cliente = ?',
+        [idCliente]
+    );
+    if (!cliente) throw erroHttp(404, 'Cliente não encontrado.');
+
+    await executar(
+        'UPDATE clientes SET nome = ?, telefone = ?, email = ? WHERE id_cliente = ?',
+        [nome, telefone || null, email || null, idCliente]
+    );
+
+    res.json({ mensagem: 'Cliente atualizado com sucesso.' });
+}));
+
+app.delete('/api/clientes/:id', rota(async (req, res) => {
+    const idCliente = Number(req.params.id);
+
+    if (!Number.isInteger(idCliente) || idCliente < 1) {
+        throw erroHttp(400, 'Identificador de cliente inválido.');
+    }
+
+    const cliente = await buscarUm(
+        'SELECT id_cliente FROM clientes WHERE id_cliente = ?',
+        [idCliente]
+    );
+    if (!cliente) throw erroHttp(404, 'Cliente não encontrado.');
+
+    const ordensVinculadas = await buscarUm(
+        'SELECT COUNT(*) AS total FROM ordens_servico WHERE id_cliente = ?',
+        [idCliente]
+    );
+    if (ordensVinculadas.total > 0) {
+        throw erroHttp(409, 'Não é possível excluir este cliente enquanto houver OS vinculadas.');
+    }
+
+    await executar('DELETE FROM clientes WHERE id_cliente = ?', [idCliente]);
+    res.json({ mensagem: 'Cliente excluído com sucesso.' });
+}));
+
+// =========================================================
 // CADASTRO DE TÉCNICOS — MANTIDO SEPARADO
 // =========================================================
 
@@ -990,11 +1095,11 @@ app.get('/api/ordens/resumo', rota(async (req, res) => {
     const totalOs = await buscarUm('SELECT COUNT(*) AS total FROM ordens_servico');
     const concluidas = await buscarUm('SELECT COUNT(*) AS total FROM ordens_servico WHERE id_status = 2');
     const emAndamento = await buscarUm('SELECT COUNT(*) AS total FROM ordens_servico WHERE id_status = 1');
-    
+
     // Calcula atrasadas (OS em andamento ou pendentes cuja data é menor que a data de hoje)
     const hoje = new Date().toISOString().slice(0, 10);
     const atrasadas = await buscarUm(
-        `SELECT COUNT(*) AS total FROM ordens_servico 
+        `SELECT COUNT(*) AS total FROM ordens_servico
          WHERE id_status IN (1, 3) AND data_os < ?`,
         [hoje]
     );
@@ -1138,10 +1243,11 @@ app.use((erro, req, res, next) => {
 prepararBanco()
     .then(migrarBancoAnterior)
     .then(() => {
-        const servidor = app.listen(3000, '127.0.0.1', () => {
+        const porta = Number(process.env.PORT) || 3000;
+        const servidor = app.listen(porta, '127.0.0.1', () => {
             console.log('==========================================');
             console.log('SITE + BACK-END FUNCIONANDO');
-            console.log('Abra: http://localhost:3000/index.html');
+            console.log(`Abra: http://localhost:${porta}/index.html`);
             console.log('Banco:', caminhoBanco);
             console.log('==========================================');
         });

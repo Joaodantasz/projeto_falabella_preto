@@ -1,40 +1,47 @@
 /* =========================================================
-   WEB-OS — ESTILO PRINCIPAL
+   SYNTAX.lab — ESTILO PRINCIPAL
+   Tema: preto e cinza, minimalista
    ========================================================= */
 
 :root {
-    --cor-texto: #243746;
-    --cor-texto-suave: #64748b;
-    --cor-fundo: #eef3f8;
-    --cor-branco: #ffffff;
+    color-scheme: dark;
 
-    --cor-primaria: #1794c5;
-    --cor-primaria-escura: #0b6f99;
-    --cor-menu: #083966;
+    /* Superfícies */
+    --cor-fundo: #0b0b0c;
+    --cor-menu: #070707;
+    --cor-branco: #141415;        /* cartões e blocos */
+    --cor-elevado: #1c1c1e;       /* cabeçalhos de tabela, hover */
+    --cor-campo: #0f0f10;         /* campos de formulário */
 
-    --cor-sucesso: #168653;
-    --cor-sucesso-fundo: #d5f5e3;
+    /* Texto */
+    --cor-texto: #ededed;
+    --cor-texto-suave: #8f9195;
 
-    --cor-andamento: #b77900;
-    --cor-andamento-fundo: #fff0c2;
+    /* Ação principal: cinza claro sobre preto */
+    --cor-primaria: #e6e6e6;
+    --cor-primaria-escura: #ffffff;
+    --cor-primaria-texto: #0b0b0c;
 
-    --cor-pendente: #475569;
-    --cor-pendente-fundo: #e2e8f0;
+    /* Linhas */
+    --cor-linha: #2a2a2d;
+    --cor-linha-forte: #3d3d41;
 
-    --cor-perigo: #dc3545;
-    --cor-perigo-fundo: #fde2e5;
+    /* Status: tudo em tons de cinza */
+    --cor-sucesso: #ededed;
+    --cor-sucesso-fundo: #2e2e31;
+    --cor-andamento: #cfcfd2;
+    --cor-andamento-fundo: #232325;
+    --cor-pendente: #8f9195;
+    --cor-pendente-fundo: #181819;
 
-    --cor-linha: #e5e7eb;
+    --cor-perigo: #d4d4d6;
 
-    --sombra: 0 8px 24px rgba(15, 23, 42, 0.08);
-    --sombra-hover: 0 14px 30px rgba(15, 23, 42, 0.13);
-
-    --raio: 12px;
+    --raio: 10px;
     --transicao: 0.2s ease;
 }
 
 /* =========================
-   RESET (Corrigido o hífen para asterisco *)
+   RESET
    ========================= */
 
 * {
@@ -53,13 +60,14 @@ body {
     color: var(--cor-texto);
     background: var(--cor-fundo);
     line-height: 1.6;
-    margin-left: 250px; /* Ajustado para bater certo com os 250px do .topo */
+    margin-left: 250px;
+    -webkit-font-smoothing: antialiased;
 }
 
-/* Espaçamento para a nova secção de detalhes */
 .detalhes-secao {
     margin-top: 48px;
 }
+
 a {
     color: inherit;
     text-decoration: none;
@@ -82,10 +90,17 @@ h2,
 h3,
 h4 {
     line-height: 1.2;
+    font-weight: 600;
+    letter-spacing: -0.01em;
 }
 
 p {
     color: var(--cor-texto-suave);
+}
+
+::selection {
+    background: #e6e6e6;
+    color: #0b0b0c;
 }
 
 /* =========================
@@ -97,10 +112,10 @@ p {
     inset: 0 auto 0 0;
     width: 250px;
     height: 100vh;
-    padding: 20px 16px;
+    padding: 24px 16px;
     background: var(--cor-menu);
-    color: #fff;
-    border-right: 1px solid rgba(255,255,255,0.08);
+    color: var(--cor-texto);
+    border-right: 1px solid var(--cor-linha);
     z-index: 1000;
 }
 
@@ -112,37 +127,52 @@ p {
 .menu {
     display: flex;
     flex-direction: column;
-    gap: 6px;
+    gap: 4px;
 }
 
 .marca {
-    display: block;
+    display: flex;
+    align-items: center;
+    gap: 12px;
     padding: 4px 10px 0;
-    font-family: "Fraunces", Georgia, serif;
-    font-size: 23px;
-    font-weight: 700;
-    color: #fff;
+    font-size: 19px;
+    font-weight: 600;
+    letter-spacing: 0.02em;
+    color: var(--cor-texto);
+}
+
+/* Logo da equipe no menu (fundo transparente) */
+.marca::before {
+    content: "";
+    flex: 0 0 44px;
+    width: 44px;
+    height: 44px;
+    background: url("IMG/logo-removebg-preview.png") center / contain no-repeat;
 }
 
 .menu > p {
-    padding: 0 10px 22px;
-    color: rgba(255,255,255,0.7);
-    font-size: 12px;
-    line-height: 1.35;
+    padding: 4px 10px 26px;
+    color: var(--cor-texto-suave);
+    font-size: 11px;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    line-height: 1.5;
 }
 
 .menu > a:not(.marca) {
     display: block;
-    padding: 12px 14px;
-    border-radius: 9px;
-    color: rgba(255,255,255,0.9);
+    padding: 11px 14px;
+    border-radius: 8px;
+    border-left: 2px solid transparent;
+    color: var(--cor-texto-suave);
     font-size: 14px;
-    transition: background var(--transicao), transform var(--transicao);
+    transition: background var(--transicao), color var(--transicao), border-color var(--transicao);
 }
 
 .menu > a:not(.marca):hover {
-    background: rgba(255,255,255,0.1);
-    transform: translateX(4px);
+    background: var(--cor-elevado);
+    color: var(--cor-texto);
+    border-left-color: var(--cor-texto);
 }
 
 /* =========================
@@ -154,23 +184,30 @@ main,
     width: 100%;
     max-width: 1180px;
     margin: 0 auto;
-    padding: 42px;
+    padding: 48px 44px;
 }
+
 h5 {
-    font-size: medium;
-    background-color: #f5d8db;
-    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    margin-top: 18px;
+    padding: 8px 12px;
+    font-size: 13px;
+    font-weight: 600;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+    color: var(--cor-texto-suave);
+    background-color: var(--cor-elevado);
+    border-radius: 6px;
 }
+
 h4 {
     font-size: small;
-    font-family: Cambria, Cochin, Georgia, Times, 'Times New Roman', serif;
 }
 
 .hero {
     width: 100%;
     max-width: 1180px;
     margin: 0 auto;
-    padding: 52px 42px 25px;
+    padding: 56px 44px 20px;
 }
 
 .hero-texto {
@@ -181,14 +218,14 @@ h4 {
 .hero h2,
 .pagina > h1 {
     margin-bottom: 8px;
-    font-size: clamp(28px, 4vw, 42px);
+    font-size: clamp(28px, 4vw, 40px);
     color: var(--cor-texto);
 }
 
 .hero p,
 .pagina > p {
     margin-bottom: 24px;
-    font-size: 17px;
+    font-size: 16px;
 }
 
 .secao-titulo {
@@ -196,12 +233,13 @@ h4 {
     align-items: center;
     justify-content: space-between;
     gap: 15px;
-    margin: 30px 0 12px;
+    margin: 32px 0 12px;
 }
 
 .secao-titulo h2,
 .secao-titulo h3 {
     color: var(--cor-texto);
+    font-size: 18px;
 }
 
 /* =========================
@@ -211,18 +249,17 @@ h4 {
 .botao,
 .botao-menu,
 .entrar {
-    background-color: #316950;
     display: inline-flex;
     align-items: center;
     justify-content: center;
-    border: 0;
+    border: 1px solid transparent;
     border-radius: 8px;
     cursor: pointer;
-    font-size: 10px;
+    font-size: 13px;
     font-weight: 600;
-    transition: transform var(--transicao), background var(--transicao), box-shadow var(--transicao);
+    letter-spacing: 0.01em;
+    transition: transform var(--transicao), background var(--transicao), border-color var(--transicao), color var(--transicao);
 }
-
 
 .botao {
     padding: 11px 18px;
@@ -231,15 +268,13 @@ h4 {
 .botao:hover,
 .botao-menu:hover,
 .entrar:hover {
-    transform: translateY(-2px);
-    
+    transform: translateY(-1px);
 }
 
 .botao-menu {
-    padding: 11px 18px;
+    padding: 10px 16px;
     background: var(--cor-primaria);
-    color: #fff;
-    box-shadow: 0 4px 12px rgba(23,148,197,0.18);
+    color: var(--cor-primaria-texto);
 }
 
 .botao-menu:hover {
@@ -248,16 +283,41 @@ h4 {
 
 .botao-preenchido {
     background: var(--cor-primaria);
-    color: #fff;
+    color: var(--cor-primaria-texto);
 }
+
+.botao-preenchido:hover {
+    background: var(--cor-primaria-escura);
+}
+
 .botao-contorno {
-    border: 1px solid var(--cor-andamento);
-    background-color: #ff0000;
-    color: white;
+    background: transparent;
+    border-color: var(--cor-linha-forte);
+    color: var(--cor-texto);
 }
+
+.botao-contorno:hover {
+    border-color: var(--cor-texto);
+}
+
 .botao-claro {
-    background: #e7f5fb;
-    color: var(--cor-primaria-escura);
+    background: var(--cor-elevado);
+    color: var(--cor-texto);
+}
+
+/* Botões dentro de tabelas ficam mais discretos */
+td .botao-menu {
+    padding: 6px 12px;
+    background: transparent;
+    border-color: var(--cor-linha-forte);
+    color: var(--cor-texto);
+    font-size: 12px;
+}
+
+td .botao-menu:hover {
+    background: var(--cor-primaria);
+    border-color: var(--cor-primaria);
+    color: var(--cor-primaria-texto);
 }
 
 /* =========================
@@ -267,7 +327,7 @@ h4 {
 .cards-resumo {
     display: grid;
     grid-template-columns: repeat(4, minmax(0, 1fr));
-    gap: 18px;
+    gap: 16px;
     margin: 25px 0 32px;
 }
 
@@ -275,33 +335,38 @@ h4 {
 .card2,
 .card3,
 .card4 {
-    min-height: 155px;
+    min-height: 150px;
     padding: 22px;
     border-radius: var(--raio);
-    color: #fff;
-    box-shadow: var(--sombra);
-    transition: transform var(--transicao), box-shadow var(--transicao);
+    border: 1px solid var(--cor-linha);
+    color: var(--cor-texto);
+    transition: transform var(--transicao), border-color var(--transicao);
 }
 
-.card1 { background: #554aec; }
-.card2 { background: #35b86b; }
-.card3 { background: #e0b93b; color: #243746; }
-.card4 { background: #e23d4f; }
+/* Degradê sutil de cinzas, do mais escuro ao mais claro */
+.card1 { background: #121213; }
+.card2 { background: #171718; }
+.card3 { background: #1c1c1e; }
+.card4 { background: #212123; }
 
 .card1:hover,
 .card2:hover,
 .card3:hover,
 .card4:hover {
-    transform: translateY(-5px);
-    box-shadow: var(--sombra-hover);
+    transform: translateY(-3px);
+    border-color: var(--cor-linha-forte);
 }
 
 .card1 h2,
 .card2 h2,
 .card3 h2,
 .card4 h2 {
-    font-size: 17px;
-    margin-bottom: 15px;
+    margin-bottom: 14px;
+    font-size: 13px;
+    font-weight: 500;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: var(--cor-texto-suave);
 }
 
 .card1 h3,
@@ -312,8 +377,9 @@ h4 {
 .card2 h4,
 .card3 h4,
 .card4 h4 {
-    font-size: 34px;
     margin-bottom: 10px;
+    font-size: 38px;
+    font-weight: 600;
 }
 
 .card1 a,
@@ -321,9 +387,18 @@ h4 {
 .card3 a,
 .card4 a {
     display: inline-block;
-    color: inherit;
+    color: var(--cor-texto-suave);
     font-size: 13px;
     text-decoration: underline;
+    text-underline-offset: 3px;
+    transition: color var(--transicao);
+}
+
+.card1 a:hover,
+.card2 a:hover,
+.card3 a:hover,
+.card4 a:hover {
+    color: var(--cor-texto);
 }
 
 /* =========================
@@ -333,7 +408,7 @@ h4 {
 .cards {
     display: grid;
     grid-template-columns: repeat(4, minmax(0, 1fr));
-    gap: 18px;
+    gap: 16px;
     width: 100%;
     margin-top: 25px;
 }
@@ -345,23 +420,22 @@ h4 {
     border: 1px solid var(--cor-linha);
     border-radius: var(--raio);
     text-align: center;
-    box-shadow: var(--sombra);
-    transition: transform var(--transicao), box-shadow var(--transicao);
+    transition: transform var(--transicao), border-color var(--transicao);
 }
 
 .card:hover {
-    transform: translateY(-4px);
-    box-shadow: var(--sombra-hover);
+    transform: translateY(-3px);
+    border-color: var(--cor-linha-forte);
 }
 
 .card h2 {
     margin-bottom: 10px;
     color: var(--cor-texto);
-    font-size: 18px;
+    font-size: 17px;
 }
 
 .card p {
-    margin-bottom: 12px;
+    margin-bottom: 14px;
     font-size: 14px;
 }
 
@@ -372,11 +446,10 @@ h4 {
 .block {
     width: 100%;
     margin: 20px 0;
-    padding: 22px;
+    padding: 24px;
     background: var(--cor-branco);
     border: 1px solid var(--cor-linha);
     border-radius: var(--raio);
-    box-shadow: var(--sombra);
 }
 
 .block h2,
@@ -397,23 +470,25 @@ table {
     width: 100%;
     min-width: 650px;
     border-collapse: collapse;
-    background: #fff;
+    background: transparent;
     overflow: hidden;
 }
 
 th {
-    padding: 13px;
-    background: #e8eef4;
-    color: var(--cor-texto);
+    padding: 12px 13px;
+    background: var(--cor-elevado);
+    color: var(--cor-texto-suave);
     text-align: left;
-    font-size: 13px;
-    font-weight: 700;
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
 }
 
 td {
-    padding: 13px;
-    border-bottom: 1px solid #edf0f2;
-    color: #475569;
+    padding: 14px 13px;
+    border-bottom: 1px solid var(--cor-linha);
+    color: var(--cor-texto);
     font-size: 14px;
 }
 
@@ -422,11 +497,11 @@ tr:last-child td {
 }
 
 tr:hover td {
-    background: #f8fafc;
+    background: #19191a;
 }
 
 /* =========================
-   STATUS
+   STATUS (tons de cinza)
    ========================= */
 
 .andamento,
@@ -434,10 +509,22 @@ tr:hover td {
 .pendente {
     display: inline-flex;
     align-items: center;
-    padding: 5px 10px;
+    gap: 7px;
+    padding: 4px 11px;
+    border: 1px solid var(--cor-linha-forte);
     border-radius: 999px;
     font-size: 12px;
-    font-weight: 700;
+    font-weight: 600;
+}
+
+.andamento::before,
+.concluida::before,
+.pendente::before {
+    content: "";
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: currentColor;
 }
 
 .andamento {
@@ -445,14 +532,17 @@ tr:hover td {
     color: var(--cor-andamento);
 }
 
+/* Concluída: preenchido e claro, o destaque do conjunto */
 .concluida {
     background: var(--cor-sucesso-fundo);
     color: var(--cor-sucesso);
 }
 
+/* Pendente: apagado e vazado */
 .pendente {
     background: var(--cor-pendente-fundo);
     color: var(--cor-pendente);
+    border-style: dashed;
 }
 
 /* =========================
@@ -472,11 +562,12 @@ tr:hover td {
 .pesquisa select {
     min-height: 42px;
     padding: 9px 12px;
-    border: 1px solid #d5dce3;
+    border: 1px solid var(--cor-linha);
     border-radius: 8px;
-    background: #fff;
+    background: var(--cor-campo);
     color: var(--cor-texto);
     outline: none;
+    transition: border-color var(--transicao), box-shadow var(--transicao);
 }
 
 .filtros input {
@@ -485,8 +576,8 @@ tr:hover td {
 
 .filtros input:focus,
 .filtros select:focus {
-    border-color: var(--cor-primaria);
-    box-shadow: 0 0 0 3px rgba(23,148,197,0.12);
+    border-color: var(--cor-texto-suave);
+    box-shadow: 0 0 0 3px rgba(237, 237, 237, 0.08);
 }
 
 /* =========================
@@ -511,9 +602,11 @@ tr:hover td {
 }
 
 .campo label {
-    color: var(--cor-texto);
-    font-size: 14px;
+    color: var(--cor-texto-suave);
+    font-size: 12px;
     font-weight: 600;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
 }
 
 .campo input,
@@ -521,18 +614,25 @@ tr:hover td {
 .campo textarea {
     width: 100%;
     padding: 11px 12px;
-    border: 1px solid #d5dce3;
+    border: 1px solid var(--cor-linha);
     border-radius: 8px;
-    background: #fff;
+    background: var(--cor-campo);
     color: var(--cor-texto);
     outline: none;
+    transition: border-color var(--transicao), box-shadow var(--transicao);
+}
+
+.campo input::placeholder,
+.campo textarea::placeholder,
+.filtros input::placeholder {
+    color: #5c5e62;
 }
 
 .campo input:focus,
 .campo select:focus,
 .campo textarea:focus {
-    border-color: var(--cor-primaria);
-    box-shadow: 0 0 0 3px rgba(23,148,197,0.12);
+    border-color: var(--cor-texto-suave);
+    box-shadow: 0 0 0 3px rgba(237, 237, 237, 0.08);
 }
 
 .campo textarea {
@@ -550,9 +650,10 @@ tr:hover td {
 .aviso {
     padding: 12px 15px;
     border-radius: 8px;
-    background: #fff8df;
-    border: 1px solid #f1df9d;
-    color: #755b00;
+    background: var(--cor-elevado);
+    border: 1px solid var(--cor-linha);
+    border-left: 3px solid var(--cor-texto-suave);
+    color: var(--cor-texto-suave);
     font-size: 14px;
 }
 
@@ -566,23 +667,35 @@ tr:hover td {
     display: grid;
     place-items: center;
     padding: 30px 18px;
-    background: linear-gradient(135deg, #eef6fb, #e7edff);
+    background:
+        radial-gradient(ellipse at 50% 0%, #1a1a1c 0%, transparent 60%),
+        var(--cor-fundo);
 }
 
 .login-container {
-    width: min(100%, 430px);
+    width: min(100%, 420px);
 }
 
 .login-cabecalho {
-    margin-bottom: 22px;
+    margin-bottom: 26px;
     text-align: center;
+}
+
+/* Logo da equipe na tela de login */
+.login-cabecalho::before {
+    content: "";
+    display: block;
+    width: 110px;
+    height: 110px;
+    margin: 0 auto 14px;
+    background: url("IMG/logo-removebg-preview.png") center / contain no-repeat;
 }
 
 .login-cabecalho h1 {
     margin-bottom: 8px;
-    color: var(--cor-menu);
-    font-family: "Fraunces", Georgia, serif;
-    font-size: 38px;
+    color: var(--cor-texto);
+    font-size: 30px;
+    letter-spacing: 0.04em;
 }
 
 .login-cabecalho p {
@@ -591,11 +704,15 @@ tr:hover td {
 }
 
 .login-card {
-    padding: 24px;
-    background: #fff;
+    padding: 28px;
+    background: var(--cor-branco);
     border: 1px solid var(--cor-linha);
-    border-radius: 16px;
-    box-shadow: var(--sombra-hover);
+    border-radius: 14px;
+}
+
+.login-card h2 {
+    margin-bottom: 18px;
+    font-size: 18px;
 }
 
 .login-card .formulario {
@@ -608,7 +725,7 @@ tr:hover td {
 
 .login-card .campo input,
 .login-card .campo select {
-    padding: 9px 11px;
+    padding: 10px 12px;
 }
 
 .login-card .form-acoes {
@@ -619,9 +736,16 @@ tr:hover td {
 
 .login-card .link-senha,
 .login-card .login-cadastro button {
-    color: var(--cor-primaria-escura);
+    color: var(--cor-texto-suave);
     font-size: 13px;
     text-decoration: underline;
+    text-underline-offset: 3px;
+    transition: color var(--transicao);
+}
+
+.login-card .link-senha:hover,
+.login-card .login-cadastro button:hover {
+    color: var(--cor-texto);
 }
 
 .login-card .login-cadastro {
@@ -647,26 +771,33 @@ tr:hover td {
 .entrar {
     padding: 11px 20px;
     background: var(--cor-primaria);
-    color: #fff;
+    color: var(--cor-primaria-texto);
 }
+
+.entrar:hover {
+    background: var(--cor-primaria-escura);
+}
+
+/* =========================
+   MODAIS
+   ========================= */
 
 .modal-cadastro {
     width: min(430px, calc(100% - 32px));
     max-height: calc(100vh - 32px);
     max-height: calc(100dvh - 32px);
     margin: auto;
-    padding: 24px;
+    padding: 26px;
     overflow-y: auto;
     overscroll-behavior: contain;
-    border: 1px solid var(--cor-linha);
+    border: 1px solid var(--cor-linha-forte);
     border-radius: 12px;
-    background: #fff;
+    background: var(--cor-branco);
     color: var(--cor-texto);
-    box-shadow: var(--sombra-hover);
 }
 
 .modal-cadastro::backdrop {
-    background: rgba(8, 32, 50, 0.58);
+    background: rgba(0, 0, 0, 0.75);
     backdrop-filter: blur(3px);
 }
 
@@ -681,22 +812,29 @@ tr:hover td {
 .modal-cadastro h2 {
     margin-bottom: 5px;
     color: var(--cor-texto);
-    font-size: 22px;
+    font-size: 20px;
 }
 
 .modal-cadastro .modal-cabecalho p,
 .modal-cadastro .cadastro-feedback {
-    font-size: 15px;
+    font-size: 14px;
 }
 
 .modal-cadastro .modal-fechar {
     flex: 0 0 auto;
-    padding: 4px 8px;
-    border: 1px solid var(--cor-linha);
+    padding: 4px 10px;
+    border: 1px solid var(--cor-linha-forte);
     border-radius: 6px;
-    background: #fff;
-    color: var(--cor-texto);
+    background: transparent;
+    color: var(--cor-texto-suave);
+    font-size: 13px;
     cursor: pointer;
+    transition: color var(--transicao), border-color var(--transicao);
+}
+
+.modal-cadastro .modal-fechar:hover {
+    color: var(--cor-texto);
+    border-color: var(--cor-texto);
 }
 
 .modal-cadastro .formulario {
@@ -714,24 +852,32 @@ tr:hover td {
 
 .modal-cadastro .entrar:disabled {
     cursor: wait;
-    opacity: 0.65;
+    opacity: 0.55;
 }
 
-.modal-cadastro .botao-excluir {
+/* Excluir: contorno cinza, fica sólido só ao passar o mouse */
+.botao-excluir {
     min-height: 38px;
     padding: 10px 14px;
-    border: 0;
+    border: 1px solid var(--cor-linha-forte);
     border-radius: 8px;
-    background: var(--cor-perigo);
-    color: #fff;
+    background: transparent;
+    color: var(--cor-texto-suave);
     cursor: pointer;
     font-size: 12px;
     font-weight: 600;
+    transition: background var(--transicao), color var(--transicao), border-color var(--transicao);
 }
 
-.modal-cadastro .botao-excluir:disabled {
+.botao-excluir:hover {
+    background: var(--cor-texto);
+    border-color: var(--cor-texto);
+    color: var(--cor-primaria-texto);
+}
+
+.botao-excluir:disabled {
     cursor: wait;
-    opacity: 0.65;
+    opacity: 0.55;
 }
 
 /* =========================
@@ -748,6 +894,8 @@ tr:hover td {
         width: 100%;
         height: auto;
         padding: 14px;
+        border-right: 0;
+        border-bottom: 1px solid var(--cor-linha);
     }
 
     .menu {
@@ -762,6 +910,7 @@ tr:hover td {
 
     .menu > a:not(.marca) {
         padding: 9px 11px;
+        border-left: 0;
     }
 
     .marca {
@@ -814,6 +963,10 @@ tr:hover td {
     .filtros select,
     .botao-menu {
         width: 100%;
+    }
+
+    td .botao-menu {
+        width: auto;
     }
 
     .form-acoes .botao,

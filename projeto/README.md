@@ -124,7 +124,7 @@ Com este JSON:
 
 ## Observação
 
-Não é necessário criar o arquivo `banco.db` manualmente.  
+Não é necessário criar o arquivo `banco.db` manualmente.
 Ele será criado automaticamente quando você rodar:
 
 ```bash
